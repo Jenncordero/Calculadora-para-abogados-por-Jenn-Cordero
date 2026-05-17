@@ -1,0 +1,170 @@
+import { useState } from "react";
+
+const P = "#3b1f5e";
+const G = "#d4af37";
+const L = "#f5f0fa";
+
+const fmt = (n) => n ? `RD$${Number(n).toLocaleString("es-DO")}` : "RD$0";
+
+export default function Calculadora() {
+  const [vals, setVals] = useState({ p1: "", p2: "", p3: "", p5: "" });
+
+  const set = (k, v) => setVals(prev => ({ ...prev, [k]: v.replace(/[^0-9]/g, "") }));
+
+  const p1 = Number(vals.p1) || 0;
+  const p2 = Number(vals.p2) || 0;
+  const p3 = Number(vals.p3) || 0;
+  const p5 = Number(vals.p5) || 0;
+  const total = p1 + p2 + p3;
+  const valorHora = p5 > 0 ? Math.ceil(total / p5) : 0;
+  const flat3 = Math.ceil(valorHora * 3 * 1.25);
+  const flat5 = Math.ceil(valorHora * 5 * 1.25);
+  const flat8 = Math.ceil(valorHora * 8 * 1.25);
+  const retainer10 = Math.ceil(valorHora * 10);
+  const retainer20 = Math.ceil(valorHora * 20);
+
+  const inp = (k, label, sub) => (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ fontSize: 13, color: "#333", marginBottom: 3, fontWeight: 600 }}>{label}</div>
+      {sub && <div style={{ fontSize: 11, color: "#888", marginBottom: 6, fontStyle: "italic", lineHeight: 1.5 }}>{sub}</div>}
+      <div style={{ display: "flex", alignItems: "center", border: `1.5px solid ${G}`, borderRadius: 8, overflow: "hidden" }}>
+        <div style={{ background: P, color: G, padding: "10px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" }}>RD$</div>
+        <input
+          type="tel"
+          inputMode="numeric"
+          value={vals[k]}
+          onChange={e => set(k, e.target.value)}
+          placeholder="0"
+          style={{ border: "none", outline: "none", padding: "10px 14px", fontSize: 16, flex: 1, fontFamily: "inherit", background: "#fff" }}
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ fontFamily: "'Segoe UI', sans-serif", maxWidth: 480, margin: "0 auto", padding: 20 }}>
+
+      {/* Header */}
+      <div style={{ background: P, borderRadius: 14, padding: "28px 20px", textAlign: "center", marginBottom: 24 }}>
+        <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginBottom: 4 }}>Calculadora para Abogados</div>
+        <div style={{ fontSize: 14, color: "rgba(255,255,255,.6)", marginBottom: 12 }}>creada por Jenn Cordero</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 16 }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={G} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <div style={{ fontSize: 12, color: G }}>@jenncorderord</div>
+        </div>
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,.65)" }}>El número que todo abogado debe conocer antes de poner cualquier precio</div>
+      </div>
+
+      {/* Intro */}
+      <div style={{ background: L, borderLeft: `3px solid ${G}`, borderRadius: 8, padding: 14, marginBottom: 20, fontSize: 12, color: P, lineHeight: 1.6 }}>
+        Esta calculadora no te dice cuánto cobrar por hora. Te dice cuánto necesitas ganar por cada hora de trabajo jurídico — para que puedas decidir si cobras flat, retainer, por hora o cuota litis.
+      </div>
+
+      {/* Campos */}
+      <div style={{ background: "#fff", borderRadius: 12, padding: 20, boxShadow: "0 2px 10px rgba(59,31,94,.07)", marginBottom: 16 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 16 }}>Lo que necesitas ganar</div>
+
+        {inp("p1", "Paso 1 — ¿Cuánto quieres llevarte al mes?",
+          "Tu sueldo como dueño · tu ingreso objetivo · o el extra que quieres generar fuera de tu empleo")}
+
+        {inp("p2", "Paso 2 — ¿Cuánto te cuesta operar al mes?",
+          "Renta, salarios, software, membresías, celular, espacio en casa")}
+
+        {inp("p3", "Paso 3 — ¿Cuánto gastas por caso en promedio?",
+          "Tasas, transporte, pago mensajero, notarías, legalizaciones")}
+
+        <div style={{ background: P, borderRadius: 8, padding: 12, display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Total que necesitas facturar al mes</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: G }}>{fmt(total)}</div>
+        </div>
+      </div>
+
+      <div style={{ background: "#fff", borderRadius: 12, padding: 20, boxShadow: "0 2px 10px rgba(59,31,94,.07)", marginBottom: 16 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 8 }}>Tus horas facturables</div>
+
+        <div style={{ background: L, borderLeft: `3px solid ${G}`, borderRadius: 8, padding: 12, marginBottom: 14, fontSize: 12, color: "#555", lineHeight: 1.6 }}>
+          Son solo las horas de <strong>trabajo jurídico directo</strong> que el cliente recibe: redactar, investigar, comparecer, asesorar, negociar.<br/><br/>
+          Usa tu <strong>peor mes</strong> — no el mejor. Si tu precio cubre el peor mes, en los buenos meses ganarás más.
+        </div>
+
+        {inp("p5", "Paso 4 — ¿Cuántas horas de trabajo jurídico directo tuviste en tu peor mes?",
+          "Solo cuenta el trabajo que el cliente recibe directamente — no traslados, no administración, no captación")}
+      </div>
+
+      {/* Resultado */}
+      {valorHora > 0 && (
+        <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 10px rgba(59,31,94,.07)", marginBottom: 16 }}>
+          <div style={{ background: P, padding: "14px 20px" }}>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,.6)", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 4 }}>Tu resultado</div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)" }}>Tu piso mínimo por hora de trabajo jurídico</div>
+          </div>
+          <div style={{ padding: 20 }}>
+            <div style={{ textAlign: "center", marginBottom: 20 }}>
+              <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Tu valor hora mínimo</div>
+              <div style={{ fontSize: 42, fontWeight: 900, color: P }}>{fmt(valorHora)}</div>
+              <div style={{ fontSize: 12, color: "#888", fontStyle: "italic" }}>por hora de trabajo jurídico directo</div>
+            </div>
+
+            <div style={{ background: L, borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, color: P, lineHeight: 1.6 }}>
+              Este es tu piso — no lo que cobras. Ahora decides cómo cobrar.
+            </div>
+
+            <div style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10 }}>¿Cómo usar este número?</div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #f0ebf8" }}>
+              <div style={{ fontSize: 13, color: "#555" }}>Si cobras por hora — este es tu mínimo</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: P }}>{fmt(valorHora)}</div>
+            </div>
+
+            <div style={{ padding: "10px 0", borderBottom: "1px solid #f0ebf8" }}>
+              <div style={{ fontSize: 13, color: "#555", marginBottom: 8 }}>Si cobras flat — ejemplos con 25% de colchón:</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {[["Caso de 3 hrs", flat3], ["Caso de 5 hrs", flat5], ["Caso de 8 hrs", flat8]].map(([l, v]) => (
+                  <div key={l} style={{ flex: 1, minWidth: 90, background: L, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
+                    <div style={{ fontSize: 10, color: "#888", marginBottom: 2 }}>{l}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: P }}>{fmt(v)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ padding: "10px 0" }}>
+              <div style={{ fontSize: 13, color: "#555", marginBottom: 8 }}>Si cobras retainer:</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[["10 hrs/mes", retainer10], ["20 hrs/mes", retainer20]].map(([l, v]) => (
+                  <div key={l} style={{ flex: 1, background: L, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
+                    <div style={{ fontSize: 10, color: "#888", marginBottom: 2 }}>{l}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: P }}>{fmt(v)}</div>
+                    <div style={{ fontSize: 9, color: "#aaa" }}>al mes</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16, padding: 12, background: "#f0faf5", borderRadius: 8, borderLeft: "3px solid #2eb882", fontSize: 12, color: "#1a7f5a", lineHeight: 1.6 }}>
+              <strong>Recuerda:</strong> Calibrado con tu peor mes — en los buenos meses ganarás más. Lo que venga por debajo de este número es trabajar para perder.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div style={{ textAlign: "center", marginTop: 20, paddingBottom: 10 }}>
+        <div style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>Sin Protocolo · Creado por Jenneffer Cordero</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <div style={{ fontSize: 12, color: "#888" }}>jenncorderord</div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
