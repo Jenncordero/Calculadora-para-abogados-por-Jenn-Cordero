@@ -1,170 +1,165 @@
-import { useState } from "react";
-
-const P = "#3b1f5e";
-const G = "#d4af37";
-const L = "#f5f0fa";
-
-const fmt = (n) => n ? `RD$${Number(n).toLocaleString("es-DO")}` : "RD$0";
-
-export default function Calculadora() {
-  const [vals, setVals] = useState({ p1: "", p2: "", p3: "", p5: "" });
-
-  const set = (k, v) => setVals(prev => ({ ...prev, [k]: v.replace(/[^0-9]/g, "") }));
-
-  const p1 = Number(vals.p1) || 0;
-  const p2 = Number(vals.p2) || 0;
-  const p3 = Number(vals.p3) || 0;
-  const p5 = Number(vals.p5) || 0;
-  const total = p1 + p2 + p3;
-  const valorHora = p5 > 0 ? Math.ceil(total / p5) : 0;
-  const flat3 = Math.ceil(valorHora * 3 * 1.25);
-  const flat5 = Math.ceil(valorHora * 5 * 1.25);
-  const flat8 = Math.ceil(valorHora * 8 * 1.25);
-  const retainer10 = Math.ceil(valorHora * 10);
-  const retainer20 = Math.ceil(valorHora * 20);
-
-  const inp = (k, label, sub) => (
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 13, color: "#333", marginBottom: 3, fontWeight: 600 }}>{label}</div>
-      {sub && <div style={{ fontSize: 11, color: "#888", marginBottom: 6, fontStyle: "italic", lineHeight: 1.5 }}>{sub}</div>}
-      <div style={{ display: "flex", alignItems: "center", border: `1.5px solid ${G}`, borderRadius: 8, overflow: "hidden" }}>
-        <div style={{ background: P, color: G, padding: "10px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" }}>RD$</div>
-        <input
-          type="tel"
-          inputMode="numeric"
-          value={vals[k]}
-          onChange={e => set(k, e.target.value)}
-          placeholder="0"
-          style={{ border: "none", outline: "none", padding: "10px 14px", fontSize: 16, flex: 1, fontFamily: "inherit", background: "#fff" }}
-        />
-      </div>
-    </div>
-  );
-
-  return (
-    <div style={{ fontFamily: "'Segoe UI', sans-serif", maxWidth: 480, margin: "0 auto", padding: 20 }}>
-
-      {/* Header */}
-      <div style={{ background: P, borderRadius: 14, padding: "28px 20px", textAlign: "center", marginBottom: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginBottom: 4 }}>Calculadora para Abogados</div>
-        <div style={{ fontSize: 14, color: "rgba(255,255,255,.6)", marginBottom: 12 }}>creada por Jenn Cordero</div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 16 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={G} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-          </svg>
-          <div style={{ fontSize: 12, color: G }}>@jenncorderord</div>
-        </div>
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,.65)" }}>El número que todo abogado debe conocer antes de poner cualquier precio</div>
-      </div>
-
-      {/* Intro */}
-      <div style={{ background: L, borderLeft: `3px solid ${G}`, borderRadius: 8, padding: 14, marginBottom: 20, fontSize: 12, color: P, lineHeight: 1.6 }}>
-        Esta calculadora no te dice cuánto cobrar por hora. Te dice cuánto necesitas ganar por cada hora de trabajo jurídico — para que puedas decidir si cobras flat, retainer, por hora o cuota litis.
-      </div>
-
-      {/* Campos */}
-      <div style={{ background: "#fff", borderRadius: 12, padding: 20, boxShadow: "0 2px 10px rgba(59,31,94,.07)", marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 16 }}>Lo que necesitas ganar</div>
-
-        {inp("p1", "Paso 1 — ¿Cuánto quieres llevarte al mes?",
-          "Tu sueldo como dueño · tu ingreso objetivo · o el extra que quieres generar fuera de tu empleo")}
-
-        {inp("p2", "Paso 2 — ¿Cuánto te cuesta operar al mes?",
-          "Renta, salarios, software, membresías, celular, espacio en casa")}
-
-        {inp("p3", "Paso 3 — ¿Cuánto gastas por caso en promedio?",
-          "Tasas, transporte, pago mensajero, notarías, legalizaciones")}
-
-        <div style={{ background: P, borderRadius: 8, padding: 12, display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Total que necesitas facturar al mes</div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: G }}>{fmt(total)}</div>
-        </div>
-      </div>
-
-      <div style={{ background: "#fff", borderRadius: 12, padding: 20, boxShadow: "0 2px 10px rgba(59,31,94,.07)", marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 8 }}>Tus horas facturables</div>
-
-        <div style={{ background: L, borderLeft: `3px solid ${G}`, borderRadius: 8, padding: 12, marginBottom: 14, fontSize: 12, color: "#555", lineHeight: 1.6 }}>
-          Son solo las horas de <strong>trabajo jurídico directo</strong> que el cliente recibe: redactar, investigar, comparecer, asesorar, negociar.<br/><br/>
-          Usa tu <strong>peor mes</strong> — no el mejor. Si tu precio cubre el peor mes, en los buenos meses ganarás más.
-        </div>
-
-        {inp("p5", "Paso 4 — ¿Cuántas horas de trabajo jurídico directo tuviste en tu peor mes?",
-          "Solo cuenta el trabajo que el cliente recibe directamente — no traslados, no administración, no captación")}
-      </div>
-
-      {/* Resultado */}
-      {valorHora > 0 && (
-        <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 10px rgba(59,31,94,.07)", marginBottom: 16 }}>
-          <div style={{ background: P, padding: "14px 20px" }}>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,.6)", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 4 }}>Tu resultado</div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)" }}>Tu piso mínimo por hora de trabajo jurídico</div>
-          </div>
-          <div style={{ padding: 20 }}>
-            <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Tu valor hora mínimo</div>
-              <div style={{ fontSize: 42, fontWeight: 900, color: P }}>{fmt(valorHora)}</div>
-              <div style={{ fontSize: 12, color: "#888", fontStyle: "italic" }}>por hora de trabajo jurídico directo</div>
-            </div>
-
-            <div style={{ background: L, borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, color: P, lineHeight: 1.6 }}>
-              Este es tu piso — no lo que cobras. Ahora decides cómo cobrar.
-            </div>
-
-            <div style={{ fontSize: 12, fontWeight: 800, color: P, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 10 }}>¿Cómo usar este número?</div>
-
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #f0ebf8" }}>
-              <div style={{ fontSize: 13, color: "#555" }}>Si cobras por hora — este es tu mínimo</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: P }}>{fmt(valorHora)}</div>
-            </div>
-
-            <div style={{ padding: "10px 0", borderBottom: "1px solid #f0ebf8" }}>
-              <div style={{ fontSize: 13, color: "#555", marginBottom: 8 }}>Si cobras flat — ejemplos con 25% de colchón:</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {[["Caso de 3 hrs", flat3], ["Caso de 5 hrs", flat5], ["Caso de 8 hrs", flat8]].map(([l, v]) => (
-                  <div key={l} style={{ flex: 1, minWidth: 90, background: L, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
-                    <div style={{ fontSize: 10, color: "#888", marginBottom: 2 }}>{l}</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: P }}>{fmt(v)}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ padding: "10px 0" }}>
-              <div style={{ fontSize: 13, color: "#555", marginBottom: 8 }}>Si cobras retainer:</div>
-              <div style={{ display: "flex", gap: 8 }}>
-                {[["10 hrs/mes", retainer10], ["20 hrs/mes", retainer20]].map(([l, v]) => (
-                  <div key={l} style={{ flex: 1, background: L, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
-                    <div style={{ fontSize: 10, color: "#888", marginBottom: 2 }}>{l}</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: P }}>{fmt(v)}</div>
-                    <div style={{ fontSize: 9, color: "#aaa" }}>al mes</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ marginTop: 16, padding: 12, background: "#f0faf5", borderRadius: 8, borderLeft: "3px solid #2eb882", fontSize: 12, color: "#1a7f5a", lineHeight: 1.6 }}>
-              <strong>Recuerda:</strong> Calibrado con tu peor mes — en los buenos meses ganarás más. Lo que venga por debajo de este número es trabajar para perder.
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <div style={{ textAlign: "center", marginTop: 20, paddingBottom: 10 }}>
-        <div style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>Sin Protocolo · Creado por Jenneffer Cordero</div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-          </svg>
-          <div style={{ fontSize: 12, color: "#888" }}>jenncorderord</div>
-        </div>
-      </div>
-
-    </div>
-  );
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora para Abogados — Jenn Cordero</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f5f0fa;min-height:100vh;padding:20px}
+.wrap{max-width:480px;margin:0 auto}
+.header{background:#3b1f5e;border-radius:14px;padding:28px 20px;text-align:center;margin-bottom:20px}
+.h-title{font-size:24px;font-weight:900;color:#fff;margin-bottom:4px}
+.h-sub{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:12px}
+.h-ig{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px}
+.h-ig span{font-size:12px;color:#d4af37}
+.h-desc{font-size:12px;color:rgba(255,255,255,.65)}
+.intro{background:#f5f0fa;border-left:3px solid #d4af37;border-radius:8px;padding:14px;margin-bottom:20px;font-size:12px;color:#3b1f5e;line-height:1.6}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(59,31,94,.07);margin-bottom:16px}
+.card-label{font-size:11px;font-weight:800;color:#3b1f5e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.field{margin-bottom:16px}
+.field-label{font-size:13px;color:#333;margin-bottom:3px;font-weight:600}
+.field-sub{font-size:11px;color:#888;margin-bottom:6px;font-style:italic;line-height:1.5}
+.input-wrap{display:flex;align-items:center;border:1.5px solid #d4af37;border-radius:8px;overflow:hidden}
+.input-prefix{background:#3b1f5e;color:#d4af37;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap}
+.input-wrap input{border:none;outline:none;padding:10px 14px;font-size:16px;flex:1;font-family:inherit;background:#fff}
+.total-box{background:#3b1f5e;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.total-label{font-size:12px;color:rgba(255,255,255,.7)}
+.total-val{font-size:18px;font-weight:800;color:#d4af37}
+.note{background:#f5f0fa;border-left:3px solid #d4af37;border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;color:#555;line-height:1.6}
+.result{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(59,31,94,.07);margin-bottom:16px;display:none}
+.result.show{display:block}
+.result-header{background:#3b1f5e;padding:14px 20px}
+.result-htag{font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.result-hsub{font-size:13px;color:rgba(255,255,255,.8)}
+.result-body{padding:20px}
+.result-center{text-align:center;margin-bottom:20px}
+.result-small{font-size:11px;color:#888;margin-bottom:4px}
+.result-big{font-size:42px;font-weight:900;color:#3b1f5e}
+.result-italic{font-size:12px;color:#888;font-style:italic}
+.use-note{background:#f5f0fa;border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;color:#3b1f5e;line-height:1.6}
+.use-title{font-size:12px;font-weight:800;color:#3b1f5e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.use-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0ebf8}
+.use-row-label{font-size:13px;color:#555}
+.use-row-val{font-size:16px;font-weight:700;color:#3b1f5e}
+.grid3{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.grid3-item{flex:1;min-width:90px;background:#f5f0fa;border-radius:8px;padding:8px 10px;text-align:center}
+.grid3-label{font-size:10px;color:#888;margin-bottom:2px}
+.grid3-val{font-size:13px;font-weight:700;color:#3b1f5e}
+.grid3-sub{font-size:9px;color:#aaa}
+.success-note{margin-top:16px;padding:12px;background:#f0faf5;border-radius:8px;border-left:3px solid #2eb882;font-size:12px;color:#1a7f5a;line-height:1.6}
+.footer{text-align:center;margin-top:20px;padding-bottom:20px}
+.footer-title{font-size:12px;color:#888;margin-bottom:6px}
+.footer-ig{display:flex;align-items:center;justify-content:center;gap:6px}
+.footer-ig span{font-size:12px;color:#888}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="header">
+<div class="h-title">Calculadora para Abogados</div>
+<div class="h-sub">creada por Jenn Cordero</div>
+<div class="h-ig">
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+<span>@jenncorderord</span>
+</div>
+<div class="h-desc">El número que todo abogado debe conocer antes de poner cualquier precio</div>
+</div>
+<div class="intro">Esta calculadora no te dice cuánto cobrar por hora. Te dice cuánto necesitas ganar por cada hora de trabajo jurídico — para que puedas decidir si cobras flat, retainer, por hora o cuota litis.</div>
+<div class="card">
+<div class="card-label">Lo que necesitas ganar</div>
+<div class="field">
+<div class="field-label">Paso 1 — ¿Cuánto quieres llevarte al mes?</div>
+<div class="field-sub">Tu sueldo como dueño · tu ingreso objetivo · o el extra que quieres generar fuera de tu empleo</div>
+<div class="input-wrap"><div class="input-prefix">RD$</div><input type="tel" inputmode="numeric" id="p1" placeholder="0" oninput="calc()"></div>
+</div>
+<div class="field">
+<div class="field-label">Paso 2 — ¿Cuánto te cuesta operar al mes?</div>
+<div class="field-sub">Renta, salarios, software, membresías, celular, espacio en casa</div>
+<div class="input-wrap"><div class="input-prefix">RD$</div><input type="tel" inputmode="numeric" id="p2" placeholder="0" oninput="calc()"></div>
+</div>
+<div class="field">
+<div class="field-label">Paso 3 — ¿Cuánto gastas por caso en promedio?</div>
+<div class="field-sub">Tasas, transporte, pago mensajero, notarías, legalizaciones</div>
+<div class="input-wrap"><div class="input-prefix">RD$</div><input type="tel" inputmode="numeric" id="p3" placeholder="0" oninput="calc()"></div>
+</div>
+<div class="total-box">
+<div class="total-label">Total que necesitas facturar al mes</div>
+<div class="total-val" id="total">RD$0</div>
+</div>
+</div>
+<div class="card">
+<div class="card-label">Tus horas facturables</div>
+<div class="note">Son solo las horas de <strong>trabajo jurídico directo</strong> que el cliente recibe: redactar, investigar, comparecer, asesorar, negociar.<br><br>Usa tu <strong>peor mes</strong> — no el mejor. Si tu precio cubre el peor mes, en los buenos meses ganarás más.</div>
+<div class="field">
+<div class="field-label">Paso 4 — ¿Cuántas horas de trabajo jurídico directo tuviste en tu peor mes?</div>
+<div class="field-sub">Solo cuenta el trabajo que el cliente recibe directamente — no traslados, no administración, no captación</div>
+<div class="input-wrap"><div class="input-prefix">hrs</div><input type="tel" inputmode="numeric" id="p5" placeholder="0" oninput="calc()"></div>
+</div>
+</div>
+<div class="result" id="result">
+<div class="result-header">
+<div class="result-htag">Tu resultado</div>
+<div class="result-hsub">Tu piso mínimo por hora de trabajo jurídico</div>
+</div>
+<div class="result-body">
+<div class="result-center">
+<div class="result-small">Tu valor hora mínimo</div>
+<div class="result-big" id="rHora">RD$0</div>
+<div class="result-italic">por hora de trabajo jurídico directo</div>
+</div>
+<div class="use-note">Este es tu piso — no lo que cobras. Ahora decides cómo cobrar.</div>
+<div class="use-title">¿Cómo usar este número?</div>
+<div class="use-row">
+<div class="use-row-label">Si cobras por hora — este es tu mínimo</div>
+<div class="use-row-val" id="rPorHora">RD$0</div>
+</div>
+<div style="padding:10px 0;border-bottom:1px solid #f0ebf8">
+<div style="font-size:13px;color:#555;margin-bottom:8px">Si cobras flat — ejemplos con 25% de colchón:</div>
+<div class="grid3">
+<div class="grid3-item"><div class="grid3-label">Caso de 3 hrs</div><div class="grid3-val" id="f3">RD$0</div></div>
+<div class="grid3-item"><div class="grid3-label">Caso de 5 hrs</div><div class="grid3-val" id="f5">RD$0</div></div>
+<div class="grid3-item"><div class="grid3-label">Caso de 8 hrs</div><div class="grid3-val" id="f8">RD$0</div></div>
+</div>
+</div>
+<div style="padding:10px 0">
+<div style="font-size:13px;color:#555;margin-bottom:8px">Si cobras retainer:</div>
+<div class="grid3">
+<div class="grid3-item"><div class="grid3-label">10 hrs/mes</div><div class="grid3-val" id="r10">RD$0</div><div class="grid3-sub">al mes</div></div>
+<div class="grid3-item"><div class="grid3-label">20 hrs/mes</div><div class="grid3-val" id="r20">RD$0</div><div class="grid3-sub">al mes</div></div>
+</div>
+</div>
+<div class="success-note"><strong>Recuerda:</strong> Calibrado con tu peor mes — en los buenos meses ganarás más. Lo que venga por debajo de este número es trabajar para perder.</div>
+</div>
+</div>
+<div class="footer">
+<div class="footer-title">Sin Protocolo · Creado por Jenneffer Cordero</div>
+<div class="footer-ig">
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+<span>jenncorderord</span>
+</div>
+</div>
+</div>
+<script>
+function fmt(n){return'RD$'+Math.ceil(n).toLocaleString('es-DO')}
+function val(id){return Number(document.getElementById(id).value.replace(/[^0-9]/g,''))||0}
+function calc(){
+var p1=val('p1'),p2=val('p2'),p3=val('p3'),p5=val('p5');
+var total=p1+p2+p3;
+document.getElementById('total').textContent=fmt(total);
+if(p5>0&&total>0){
+var h=Math.ceil(total/p5);
+document.getElementById('result').classList.add('show');
+document.getElementById('rHora').textContent=fmt(h);
+document.getElementById('rPorHora').textContent=fmt(h);
+document.getElementById('f3').textContent=fmt(h*3*1.25);
+document.getElementById('f5').textContent=fmt(h*5*1.25);
+document.getElementById('f8').textContent=fmt(h*8*1.25);
+document.getElementById('r10').textContent=fmt(h*10);
+document.getElementById('r20').textContent=fmt(h*20);
+}else{
+document.getElementById('result').classList.remove('show');
+}}
+</script>
+</body>
+</html>
